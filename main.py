@@ -62,7 +62,8 @@ class Echiquier:
         print("")
 
     def modifierCellule(self, x, y, valeur):
-        self.echiquier[x][y].setTypeOccupation(valeur)
+        if x >= 0 and y >= 0 and x < 8 and y < 8:
+            self.echiquier[x][y].setTypeOccupation(valeur)
 
     def placerReine(self, x, y):
         ret = self.echiquier[x][y].setTypeOccupationReine()
@@ -71,12 +72,17 @@ class Echiquier:
         else:
             print("[placerReine] Reine placée en [{}][{}]".format(x, y))
 
-            # calcul menacée horizontale & verticale
+            # Calcul menacée horizontale & verticale
             for i in range(self.taille):
-                self.modifierCellule(x, i, 2)
-                self.modifierCellule(i, y, 2)
+               self.modifierCellule(x, i, Cellule.MENACEE)
+               self.modifierCellule(i, y, Cellule.MENACEE)
 
-            #TODO: diagonales menacées
+            # Calcul des diagonales menacées
+            for i in range(8):
+                self.modifierCellule(x-i, y-i, Cellule.MENACEE)
+                self.modifierCellule(x-i, y+i, Cellule.MENACEE)
+                self.modifierCellule(x+i, y-i, Cellule.MENACEE)
+                self.modifierCellule(x+i, y+i, Cellule.MENACEE)
 
 
 if __name__ == '__main__':
