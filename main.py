@@ -105,20 +105,20 @@ class Echiquier:
             self.reset_echiquier()
             combinations_list.append(self.reine_list)
 
-        # Debug combinaisons
+        # Debug combination
         # for combinaison in combinations_list:
         #     print("----")
-        #     print(combinaison)
-        #     print(len(combinaison))
+        #     print(combination)
+        #     print(len(combination))
 
-        index_of_best_combinaison = 0
-        for i, combinaison in enumerate(combinations_list):
-            if len(combinaison) > index_of_best_combinaison:
-                index_of_best_combinaison = i
+        index_of_best_combination = 0
+        for i, combination in enumerate(combinations_list):
+            if len(combination) > index_of_best_combination:
+                index_of_best_combination = i
 
         # Debug best combinaisons
-        print("[bestCombination] Best combinaison is number: {}".format(i))
-        print("[bestCombination] Best combinaison len: {}".format(len(combinations_list[i])))
+        print("[bestCombination] Best combination is number: {}".format(i))
+        print("[bestCombination] Best combination len: {}".format(len(combinations_list[i])))
 
         return combinations_list[i]
 
@@ -129,5 +129,5 @@ if __name__ == '__main__':
     # echiquier.placerReine(1, 1)
     # print(echiquier)
 
-    best_combination = echiquier.bestCombination(epoch_limit=50000, iterations_in_epoch=50)
+    best_combination = echiquier.bestCombination(epoch_limit=500000, iterations_in_epoch=50)
     print("main: best_combination: {}".format(best_combination))
