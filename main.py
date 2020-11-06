@@ -1,4 +1,4 @@
-
+import random
 
 class Cellule:
     x = 0
@@ -33,6 +33,7 @@ class Cellule:
 class Echiquier:
     echiquier = []
     taille = 0
+    reine_list = []
 
     def echiquier(self, taille):
         self.taille = taille
@@ -64,11 +65,14 @@ class Echiquier:
             self.echiquier[x][y].setTypeOccupation(valeur)
 
     def placerReine(self, x, y):
-        ret = self.echiquier[x][y].setTypeOccupationReine()
-        if ret == Cellule.REINE or ret == Cellule.MENACEE:
-            print("[placerReine] Cellule indisponible [{}][{}]: {}".format(x, y, ret))
+        ret_occupation = self.echiquier[x][y].setTypeOccupationReine()
+        if ret_occupation == Cellule.REINE or ret_occupation == Cellule.MENACEE:
+            #print("[placerReine] Cellule indisponible [{}][{}]: {}".format(x, y, ret))
+            ret = False
         else:
-            print("[placerReine] Reine placée en [{}][{}]".format(x, y))
+            #print("[placerReine] Reine placée en [{}][{}]".format(x, y))
+            ret = True
+            self.reine_list.append((x, y))
 
             # Calcul menacée horizontale & verticale
             for i in range(self.taille):
@@ -76,15 +80,58 @@ class Echiquier:
                self.modifierCellule(i, y, Cellule.MENACEE)
 
             # Calcul des diagonales menacées
-            for i in range(8):
+            for i in range(self.taille):
                 self.modifierCellule(x-i, y-i, Cellule.MENACEE)
                 self.modifierCellule(x-i, y+i, Cellule.MENACEE)
                 self.modifierCellule(x+i, y-i, Cellule.MENACEE)
                 self.modifierCellule(x+i, y+i, Cellule.MENACEE)
+        return ret
+
+    def reset_echiquier(self):
+        for x in range(self.taille):
+            for y in range(self.taille):
+                self.modifierCellule(x, y, Cellule.LIBRE)
+
+
+    def bestCombination(self, epoch_limit=1000, iterations_in_epoch=100):
+        print("[bestCombination] bestCombination launched.")
+        combinations_list = []
+        for epoch in range(0, epoch_limit):
+            print("[bestCombination] epoch: {} on {}".format(epoch + 1, epoch_limit))
+            for i in range(0, iterations_in_epoch):
+                random.seed(6)
+                random.seed(a=None, version=2)
+                x_reine = random.randint(0, self.taille - 1)
+                y_reine = random.randint(0, self.taille - 1)
+                self.placerReine(x_reine, y_reine)
+
+            self.reset_echiquier()
+            combinations_list.append(self.reine_list)
+
+        # Debug combinaisons
+        # for combinaison in combinations_list:
+        #     print("----")
+        #     print(combinaison)
+        #     print(len(combinaison))
+
+        index_of_best_combinaison = 0
+        for i, combinaison in enumerate(combinations_list):
+            if len(combinaison) > index_of_best_combinaison:
+                index_of_best_combinaison = i
+
+        # Debug best combinaisons
+        print("[bestCombination] Best combinaison is number: {}".format(i))
+        print("[bestCombination] Best combinaison len: {}".format(len(combinations_list[i])))
+
+        return combinations_list[i]
+
 
 
 if __name__ == '__main__':
     echiquier = Echiquier()
-    echiquier.echiquier(8)
-    echiquier.placerReine(1, 1)
-    print(echiquier)
+    echiquier.echiquier(8)  # 8x8
+    #echiquier.placerReine(1, 1)
+    #print(echiquier)
+
+    best_combination = echiquier.bestCombination(epoch_limit=50000, iterations_in_epoch=50)
+    print("main: best_combination: {}".format(best_combination))
