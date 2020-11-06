@@ -1,5 +1,6 @@
 import random
 
+
 class Cellule:
     x = 0
     y = 0
@@ -9,7 +10,6 @@ class Cellule:
     LIBRE = 0
     REINE = 1
     MENACEE = 2
-
 
     def cellule(self, x, y):
         self.x = x
@@ -40,12 +40,10 @@ class Echiquier:
         self.echiquier = [[Cellule() for j in range(self.taille)] for i in range(self.taille)]
         self.initialiserEchiquier()
 
-
     def initialiserEchiquier(self):
         for x in range(self.taille):
             for y in range(self.taille):
                 self.echiquier[x][y].cellule(x, y)
-
 
     def __repr__(self):
         ret_display = ""
@@ -67,31 +65,30 @@ class Echiquier:
     def placerReine(self, x, y):
         ret_occupation = self.echiquier[x][y].setTypeOccupationReine()
         if ret_occupation == Cellule.REINE or ret_occupation == Cellule.MENACEE:
-            #print("[placerReine] Cellule indisponible [{}][{}]: {}".format(x, y, ret))
+            # print("[placerReine] Cellule indisponible [{}][{}]: {}".format(x, y, ret))
             ret = False
         else:
-            #print("[placerReine] Reine placée en [{}][{}]".format(x, y))
+            # print("[placerReine] Reine placée en [{}][{}]".format(x, y))
             ret = True
             self.reine_list.append((x, y))
 
             # Calcul menacée horizontale & verticale
             for i in range(self.taille):
-               self.modifierCellule(x, i, Cellule.MENACEE)
-               self.modifierCellule(i, y, Cellule.MENACEE)
+                self.modifierCellule(x, i, Cellule.MENACEE)
+                self.modifierCellule(i, y, Cellule.MENACEE)
 
             # Calcul des diagonales menacées
             for i in range(self.taille):
-                self.modifierCellule(x-i, y-i, Cellule.MENACEE)
-                self.modifierCellule(x-i, y+i, Cellule.MENACEE)
-                self.modifierCellule(x+i, y-i, Cellule.MENACEE)
-                self.modifierCellule(x+i, y+i, Cellule.MENACEE)
+                self.modifierCellule(x - i, y - i, Cellule.MENACEE)
+                self.modifierCellule(x - i, y + i, Cellule.MENACEE)
+                self.modifierCellule(x + i, y - i, Cellule.MENACEE)
+                self.modifierCellule(x + i, y + i, Cellule.MENACEE)
         return ret
 
     def reset_echiquier(self):
         for x in range(self.taille):
             for y in range(self.taille):
                 self.modifierCellule(x, y, Cellule.LIBRE)
-
 
     def bestCombination(self, epoch_limit=1000, iterations_in_epoch=100):
         print("[bestCombination] bestCombination launched.")
@@ -126,12 +123,11 @@ class Echiquier:
         return combinations_list[i]
 
 
-
 if __name__ == '__main__':
     echiquier = Echiquier()
     echiquier.echiquier(8)  # 8x8
-    #echiquier.placerReine(1, 1)
-    #print(echiquier)
+    # echiquier.placerReine(1, 1)
+    # print(echiquier)
 
     best_combination = echiquier.bestCombination(epoch_limit=50000, iterations_in_epoch=50)
     print("main: best_combination: {}".format(best_combination))
