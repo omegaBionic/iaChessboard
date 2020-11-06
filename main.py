@@ -1,5 +1,3 @@
-
-
 class Cellule:
     x = 0
     y = 0
@@ -33,6 +31,7 @@ class Cellule:
 class Echiquier:
     echiquier = []
     taille = 0
+    reines_placee = []
 
     def echiquier(self, taille):
         self.taille = taille
@@ -65,10 +64,11 @@ class Echiquier:
 
     def placerReine(self, x, y):
         ret = self.echiquier[x][y].setTypeOccupationReine()
-        if ret == Cellule.REINE or ret == Cellule.MENACEE:
+        if ret == Cellule.REINE:
             print("[placerReine] Cellule indisponible [{}][{}]: {}".format(x, y, ret))
         else:
             print("[placerReine] Reine placée en [{}][{}]".format(x, y))
+            self.reines_placee.append((x, y))
 
             # Calcul menacée horizontale & verticale
             for i in range(self.taille):
@@ -76,15 +76,55 @@ class Echiquier:
                self.modifierCellule(i, y, Cellule.MENACEE)
 
             # Calcul des diagonales menacées
-            for i in range(8):
+            for i in range(self.taille):
                 self.modifierCellule(x-i, y-i, Cellule.MENACEE)
                 self.modifierCellule(x-i, y+i, Cellule.MENACEE)
                 self.modifierCellule(x+i, y-i, Cellule.MENACEE)
                 self.modifierCellule(x+i, y+i, Cellule.MENACEE)
 
+    def refreshEchiquier(self):
+        # Set echiquier MENACEE to LIBRE
+        for x in range(self.taille):
+            for y in range(self.taille):
+                self.echiquier[x][y].type_occupation = Cellule.LIBRE
+
+        # Define Reine
+        self.reines_placee.pop()
+        for reine in self.reines_placee:
+            self.placerReine(reine[0], reine[1])
+
+
+    def recuperer_nbr_cellules_menacees(self):
+        nbr_cases_menacees = 0
+        for i in range(self.taille):
+            for j in range(self.taille):
+                if self.echiquier[i][j].type_occupation == 2:
+                    nbr_cases_menacees += 1
+        return nbr_cases_menacees
+
+    def choixPlacementReine(self):
+
+        nbr_cellules_menacees_pre = self.recuperer_nbr_cellules_menacees()
+        nbr_cellules_menacees_min = nbr_cellules_menacees_pre
+        x_reine, y_reine = (0, 0)
+        for i in range(self.taille):
+            for j in range(self.taille):
+                if self.echiquier[i][j].type_occupation != Cellule.REINE:
+                    self.placerReine(i, j)
+                    if self.recuperer_nbr_cellules_menacees() < nbr_cellules_menacees_min:
+                        nbr_cellules_menacees_min = self.recuperer_nbr_cellules_menacees()
+                        x_reine = i
+                        y_reine = j
+                    self.refreshEchiquier()
+        print(x_reine, y_reine)
+        self.placerReine(x_reine, y_reine)
+        return x_reine, y_reine
 
 if __name__ == '__main__':
     echiquier = Echiquier()
     echiquier.echiquier(8)
     echiquier.placerReine(1, 1)
+    print(echiquier)
+    print(echiquier.reines_placee)
+    echiquier.choixPlacementReine()
     print(echiquier)
