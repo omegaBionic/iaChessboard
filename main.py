@@ -46,20 +46,18 @@ class Echiquier:
                 self.echiquier[x][y].cellule(x, y)
 
 
-    def displayCellules(self):
+    def __repr__(self):
+        ret_display = ""
         for x in range(self.taille):
-            print("")
+            ret_display += "\n"
             for line in range(self.taille):
-                print("----", end='')
-            print("")
+                ret_display += "----"
+            ret_display += "\n"
             for y in range(self.taille):
-                # DEBUG: for display all cellules
-                #print("case[{}][{}]: [{}]".format(x, y, self.echiquier[x][y].typeOccupation))
-
                 if y == 0:
-                    print("|", end='')
-                print(" {} |".format(self.echiquier[x][y].type_occupation), end='')
-        print("")
+                    ret_display += "| "
+                ret_display += str(self.echiquier[x][y].type_occupation) + " | "
+        return ret_display
 
     def modifierCellule(self, x, y, valeur):
         if x >= 0 and y >= 0 and x < 8 and y < 8:
@@ -89,4 +87,4 @@ if __name__ == '__main__':
     echiquier = Echiquier()
     echiquier.echiquier(8)
     echiquier.placerReine(1, 1)
-    echiquier.displayCellules()
+    print(echiquier)
