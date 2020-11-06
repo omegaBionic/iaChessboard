@@ -96,9 +96,9 @@ class Echiquier:
         for epoch in range(0, epoch_limit):
             print("[bestCombination] epoch: {} on {}".format(epoch + 1, epoch_limit))
             for i in range(0, iterations_in_epoch):
-                random.seed(6)
-                random.seed(a=None, version=2)
+                random.seed(None)
                 x_reine = random.randint(0, self.taille - 1)
+                random.seed(None)
                 y_reine = random.randint(0, self.taille - 1)
                 self.placerReine(x_reine, y_reine)
 
@@ -129,5 +129,5 @@ if __name__ == '__main__':
     # echiquier.placerReine(1, 1)
     # print(echiquier)
 
-    best_combination = echiquier.bestCombination(epoch_limit=500000, iterations_in_epoch=50)
+    best_combination = echiquier.bestCombination(epoch_limit=10000, iterations_in_epoch=50)
     print("main: best_combination: {}".format(best_combination))
